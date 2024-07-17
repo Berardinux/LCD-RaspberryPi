@@ -30,23 +30,7 @@ GPIO.setup(DB5, GPIO.OUT)
 GPIO.setup(DB6, GPIO.OUT)
 GPIO.setup(DB7, GPIO.OUT)
 
-
-def letter_to_binary(letter):
-    # Get ASCII value of the letter
-    ascii_value = ord(letter)
-    print(ascii_value)
-    # Convert ASCII value to binary string and remove '0b' prefix
-    binary_value = bin(ascii_value)[2:]
-    print(binary_value)
-    # Ensure the binary string has 8 bits by padding with leading zeros
-    binary_value = binary_value.zfill(8)
-    print(binary_value)
-    return binary_value
-
 def send_to_lcd(binary_value):
-    # Set RS and RW for writing data
-    GPIO.output(RS, GPIO.HIGH)
-    GPIO.output(RW, GPIO.LOW)
     
     # Send each bit to corresponding data pin
     GPIO.output(DB7, GPIO.HIGH if binary_value[0] == '1' else GPIO.LOW)
@@ -66,6 +50,7 @@ def send_to_lcd(binary_value):
     print(binary_value[5])
     print(binary_value[6])
     print(binary_value[7])
+    print("------------")
     sleep(0.1)
     # Pulse the enable pin
     GPIO.output(E, GPIO.HIGH)
@@ -73,13 +58,18 @@ def send_to_lcd(binary_value):
     GPIO.output(E, GPIO.LOW)
     sleep(0.5)
 
-# Example usage
-letter = 'a'
-binary_representation = letter_to_binary(letter)
-print(f"Binary representation of '{letter}' is {binary_representation}")
-send_to_lcd(binary_representation)
+# Set RS and RW for writing data
+GPIO.output(RS, GPIO.LOW)
+GPIO.output(RW, GPIO.LOW)
+# Function Set
+send_to_lcd("00110000")
+# Clear Display
+send_to_lcd("00000001")
+# Return Home
+send_to_lcd("00000010")
 
-sleep(10)
+GPIO.output(RS, GPIO.HIGH)
+send_to_lcd("01100001")
 
 # Cleanup GPIO
 GPIO.cleanup()
