@@ -31,7 +31,6 @@ GPIO.setup(DB6, GPIO.OUT)
 GPIO.setup(DB7, GPIO.OUT)
 
 def send_to_lcd(binary_value):
-    
     # Send each bit to corresponding data pin
     GPIO.output(DB7, GPIO.HIGH if binary_value[0] == '1' else GPIO.LOW)
     GPIO.output(DB6, GPIO.HIGH if binary_value[1] == '1' else GPIO.LOW)
@@ -41,29 +40,42 @@ def send_to_lcd(binary_value):
     GPIO.output(DB2, GPIO.HIGH if binary_value[5] == '1' else GPIO.LOW)
     GPIO.output(DB1, GPIO.HIGH if binary_value[6] == '1' else GPIO.LOW)
     GPIO.output(DB0, GPIO.HIGH if binary_value[7] == '1' else GPIO.LOW)
-    
-    print(binary_value[0])
-    print(binary_value[1])
-    print(binary_value[2])
-    print(binary_value[3])
-    print(binary_value[4])
-    print(binary_value[5])
-    print(binary_value[6])
-    print(binary_value[7])
-    print("------------")
-    sleep(0.1)
 
-# Set RS and RW for writing data
-GPIO.output(RS, GPIO.HIGH)
-GPIO.output(RW, GPIO.LOW)
+    # Pulse the enable pin
+    GPIO.output(E, GPIO.HIGH)
+    sleep(0.001)
+    GPIO.output(E, GPIO.LOW)
+    sleep(0.001)
 
-send_to_lcd("01000001")
+def init_lcd():
+    # Set to 8-bit mode
+    GPIO.output(RS, GPIO.LOW)
+    GPIO.output(RW, GPIO.LOW)
 
-# Pulse the enable pin
-GPIO.output(E, GPIO.HIGH)
-sleep(0.5)
-GPIO.output(E, GPIO.LOW)
-sleep(0.5)
+    # Function set: 8-bit, 2 lines, 5x8 dots
+    send_to_lcd("00111000")
+
+    # Display on, cursor off, blink off
+    send_to_lcd("00001100")
+
+    # Clear display
+    send_to_lcd("00000001")
+    sleep(0.002)  # Clear command needs more time
+
+    # Entry mode set: increment cursor, no shift
+    send_to_lcd("00000110")
+
+def write_char(char):
+    # Set RS for data
+    GPIO.output(RS, GPIO.HIGH)
+    GPIO.output(RW, GPIO.LOW)
+
+    # Send character to LCD
+    send_to_lcd(f"{ord(char):08b}")
+
+# Main program
+init_lcd()
+write_char('H')
 
 # Cleanup GPIO
 GPIO.cleanup()
