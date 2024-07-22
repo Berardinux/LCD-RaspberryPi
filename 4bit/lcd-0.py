@@ -34,13 +34,10 @@ GPIO.setup(DB7, GPIO.OUT)
 def letter_to_binary(letter):
     # Get ASCII value of the letter
     ascii_value = ord(letter)
-    print(ascii_value)
     # Convert ASCII value to binary string and remove '0b' prefix
     binary_value = bin(ascii_value)[2:]
-    print(binary_value)
     # Ensure the binary string has 8 bits by padding with leading zeros
     binary_value = binary_value.zfill(8)
-    print(binary_value)
     return binary_value
 
 def send_to_lcd(binary_value):
@@ -53,33 +50,38 @@ def send_to_lcd(binary_value):
     GPIO.output(DB6, GPIO.HIGH if binary_value[1] == '1' else GPIO.LOW)
     GPIO.output(DB5, GPIO.HIGH if binary_value[2] == '1' else GPIO.LOW)
     GPIO.output(DB4, GPIO.HIGH if binary_value[3] == '1' else GPIO.LOW)
-    GPIO.output(DB3, GPIO.HIGH if binary_value[4] == '1' else GPIO.LOW)
-    GPIO.output(DB2, GPIO.HIGH if binary_value[5] == '1' else GPIO.LOW)
-    GPIO.output(DB1, GPIO.HIGH if binary_value[6] == '1' else GPIO.LOW)
-    GPIO.output(DB0, GPIO.HIGH if binary_value[7] == '1' else GPIO.LOW)
-    
-    print(binary_value[0])
-    print(binary_value[1])
-    print(binary_value[2])
-    print(binary_value[3])
-    print(binary_value[4])
-    print(binary_value[5])
-    print(binary_value[6])
-    print(binary_value[7])
-    sleep(0.1)
     # Pulse the enable pin
     GPIO.output(E, GPIO.HIGH)
-    sleep(0.5)
+    sleep(0.05)
     GPIO.output(E, GPIO.LOW)
-    sleep(0.5)
+    sleep(0.05)
+
+    GPIO.output(DB7, GPIO.HIGH if binary_value[4] == '1' else GPIO.LOW)
+    GPIO.output(DB6, GPIO.HIGH if binary_value[5] == '1' else GPIO.LOW)
+    GPIO.output(DB5, GPIO.HIGH if binary_value[6] == '1' else GPIO.LOW)
+    GPIO.output(DB4, GPIO.HIGH if binary_value[7] == '1' else GPIO.LOW)
+    # Pulse the enable pin
+    GPIO.output(E, GPIO.HIGH)
+    sleep(0.05)
+    GPIO.output(E, GPIO.LOW)
+    sleep(0.05)
+
+def letter_to_lcd(letter):
+    binary_representation = letter_to_binary(letter)
+    send_to_lcd(binary_representation)
 
 # Example usage
-letter = 'a'
-binary_representation = letter_to_binary(letter)
-print(f"Binary representation of '{letter}' is {binary_representation}")
-send_to_lcd(binary_representation)
+letter_to_lcd("B")
+letter_to_lcd("e")
+letter_to_lcd("r")
+letter_to_lcd("a")
+letter_to_lcd("r")
+letter_to_lcd("d")
+letter_to_lcd("i")
+letter_to_lcd("n")
+letter_to_lcd("u")
+letter_to_lcd("x")
 
-sleep(10)
 
 # Cleanup GPIO
 GPIO.cleanup()

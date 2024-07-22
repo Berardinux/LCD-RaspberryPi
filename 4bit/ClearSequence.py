@@ -31,17 +31,27 @@ GPIO.setup(DB6, GPIO.OUT)
 GPIO.setup(DB7, GPIO.OUT)
 
 def send_to_lcd(binary_value):
+    GPIO.output(RS, GPIO.LOW)
+    GPIO.output(RW, GPIO.LOW)
     
-    # Send each bit to corresponding data pin
     GPIO.output(DB7, GPIO.HIGH if binary_value[0] == '1' else GPIO.LOW)
     GPIO.output(DB6, GPIO.HIGH if binary_value[1] == '1' else GPIO.LOW)
     GPIO.output(DB5, GPIO.HIGH if binary_value[2] == '1' else GPIO.LOW)
     GPIO.output(DB4, GPIO.HIGH if binary_value[3] == '1' else GPIO.LOW)
-    GPIO.output(DB3, GPIO.HIGH if binary_value[4] == '1' else GPIO.LOW)
-    GPIO.output(DB2, GPIO.HIGH if binary_value[5] == '1' else GPIO.LOW)
-    GPIO.output(DB1, GPIO.HIGH if binary_value[6] == '1' else GPIO.LOW)
-    GPIO.output(DB0, GPIO.HIGH if binary_value[7] == '1' else GPIO.LOW)
-    
+    GPIO.output(E, GPIO.HIGH)
+    sleep(0.05)
+    GPIO.output(E, GPIO.LOW)
+    sleep(0.05)
+
+    GPIO.output(DB7, GPIO.HIGH if binary_value[4] == '1' else GPIO.LOW)
+    GPIO.output(DB6, GPIO.HIGH if binary_value[5] == '1' else GPIO.LOW)
+    GPIO.output(DB5, GPIO.HIGH if binary_value[6] == '1' else GPIO.LOW)
+    GPIO.output(DB4, GPIO.HIGH if binary_value[7] == '1' else GPIO.LOW)
+    GPIO.output(E, GPIO.HIGH)
+    sleep(0.05)
+    GPIO.output(E, GPIO.LOW)
+    sleep(0.05)
+
     print(binary_value[0])
     print(binary_value[1])
     print(binary_value[2])
@@ -53,17 +63,7 @@ def send_to_lcd(binary_value):
     print("------------")
     sleep(0.1)
 
-# Set RS and RW for writing data
-GPIO.output(RS, GPIO.HIGH)
-GPIO.output(RW, GPIO.LOW)
-
-send_to_lcd("01000001")
-
-# Pulse the enable pin
-GPIO.output(E, GPIO.HIGH)
-sleep(0.5)
-GPIO.output(E, GPIO.LOW)
-sleep(0.5)
+send_to_lcd("00000001")
 
 # Cleanup GPIO
 GPIO.cleanup()
