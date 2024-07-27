@@ -54,49 +54,11 @@ def send_to_lcd(binary_value, mode):
     
     pulse_enable()
 
-def letter_to_binary(letter):
-    # Get ASCII value of the letter
-    ascii_value = ord(letter)
-    # Convert ASCII value to binary string and remove '0b' prefix
-    binary_value = bin(ascii_value)[2:]
-    # Ensure the binary string has 8 bits by padding with leading zeros
-    binary_value = binary_value.zfill(8)
-    return binary_value
+try: 
+    send_to_lcd("01000010", GPIO.HIGH)
+    sleep(0.005)
+    GPIO.cleanup()
 
-def letter_to_lcd(letter):
-    binary_representation = letter_to_binary(letter)
-    send_to_lcd(binary_representation, GPIO.HIGH)
-
-# Initialize the LCD in 8-bit mode
-def initialize_lcd():
-    GPIO.output(RS, GPIO.LOW)
-    GPIO.output(RW, GPIO.LOW)
-    
-    # Initialization sequence
-    send_to_lcd("00110000", GPIO.LOW)  # Function set: 8-bit
-    sleep(0.005)
-    send_to_lcd("00110000", GPIO.LOW)  # Function set: 8-bit
-    sleep(0.005)
-    send_to_lcd("00110000", GPIO.LOW)  # Function set: 8-bit
-    sleep(0.005)
-    send_to_lcd("00111000", GPIO.LOW)  # Function set: 8-bit, 2 lines, 5x8 dots
-    sleep(0.005)
-
-    send_to_lcd("00001000", GPIO.LOW)  # Display OFF
-    sleep(0.005)
-    send_to_lcd("00000001", GPIO.LOW)  # Display clear
-    sleep(0.005)
-    send_to_lcd("00000110", GPIO.LOW)  # Entry mode set
-    sleep(0.005)
-    send_to_lcd("00001100", GPIO.LOW)  # Display ON, Cursor OFF, Blink OFF
-    sleep(0.005)
-
-# Example usage
-initialize_lcd()
-
-# Display the string "Berardinux"
-for char in "Hello World!":
-    letter_to_lcd(char)
-
-# Cleanup GPIO
-GPIO.cleanup()
+except KeyboardInterrupt:
+    print("Program interrupted. Cleaning up GPIO...")
+    GPIO.cleanup()

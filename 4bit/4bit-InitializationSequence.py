@@ -43,19 +43,6 @@ def send_byte(byte, mode):
     send_nibble(byte[:4], mode)  # Send high nibble
     send_nibble(byte[4:], mode)  # Send low nibble
 
-def letter_to_binary(letter):
-    # Get ASCII value of the letter
-    ascii_value = ord(letter)
-    # Convert ASCII value to binary string and remove '0b' prefix
-    binary_value = bin(ascii_value)[2:]
-    # Ensure the binary string has 8 bits by padding with leading zeros
-    binary_value = binary_value.zfill(8)
-    return binary_value
-
-def letter_to_lcd(letter):
-    binary_representation = letter_to_binary(letter)
-    send_byte(binary_representation, GPIO.HIGH)
-
 # Initialize the LCD in 4-bit mode
 def initialize_lcd():
     GPIO.output(RS, GPIO.LOW)
@@ -84,10 +71,6 @@ def initialize_lcd():
 
 # Example usage
 initialize_lcd()
-
-# Display the string "Berardinux"
-for char in "Berardinux":
-    letter_to_lcd(char)
 
 # Cleanup GPIO
 GPIO.cleanup()
